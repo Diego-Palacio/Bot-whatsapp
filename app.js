@@ -18,7 +18,7 @@ const conSesion=()=>{
     
         client.on('listo', () => {
         console.log('El cliente esta listo!');
-        // sendMessage();
+        // constestarMensaje();
          });
     
         client.on('error_autentificacion', () => {
@@ -57,6 +57,27 @@ const sinSesion=()=>{
 
 }
 
+
+const contestarMensaje=() => {
+    client.on('mensaje', (msg) =>{
+        const {from,to,body}=msg;  //from = numero de la persona que manda el msj. body=cuerpo del mensaje
+        console.log(from,to,body);
+       
+        switch(body){ //si el mensaje dice hola , se enviaria un cierto mensaje utilizando la funcion enviarmensaje()
+            case('hola'):
+          //  enviarMensaje(from,'holaa');
+            break;
+
+            case('chau'):
+           // enviarMensaje(from,'chauuuuu')
+        }
+  });
+}
+
+//funcion para enviar un msj
+const enviarMensaje=(to,message)=>{ 
+    client.sendMessage(to,message);
+}
 
 
 
