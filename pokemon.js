@@ -1,5 +1,8 @@
 const axios= require('axios');
 
+const hola=()=>{
+    return "hola";
+}
 
 const apiPokemon =async(numeroPokemon)=>{
     const api = await axios .get('https://pokeapi.co/api/v2/pokemon/'+numeroPokemon);

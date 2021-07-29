@@ -1,9 +1,10 @@
 const qrcode = require('qrcode-terminal'); //importamos libreria de qrs
 const { Client} = require('whatsapp-web.js'); //importamos libreria whatsapp-web
 const fs = require('fs')  //paquete que viene por defecto node nativament
-const SESSION_FILE_PATH= './sesion.json'; // guardamos sesion en la ruta especificada con el nombre sesion.json
+const SESSION_FILE_PATH= './session.json'; // guardamos sesion en la ruta especificada con el nombre sesion.json
+const apiPokemon= require('./pokemon').download;
 let client; //Declaramos variables globales
-let sesionData;
+let sessionData;
 
 
 
@@ -11,17 +12,18 @@ let sesionData;
 //Si existe cargamos el archivo con las credenciales
 const conSesion=()=>{
         console.log("conectando..")
-        sesionData = require(SESSION_FILE_PATH); //requerimos el archivo ya cargado
+        sessionData = require(SESSION_FILE_PATH); //requerimos el archivo ya cargado
         client = new Client({       //instanciamos el cliente, pero esta vez ya tiene la sesion
              session: sessionData
          });
     
-        client.on('listo', () => {
+        client.on('ready', () => {
         console.log('El cliente esta listo!');
         // constestarMensaje();
+        botPokemon();
          });
     
-        client.on('error_autentificacion', () => {
+        client.on('auth_failure', () => {
         console.log('** Error de autentificacion vuelve a generar el QRCODE (Borrar el archivo session.json) **');//Tengo que automatizarlo
         })
 
@@ -36,16 +38,16 @@ const conSesion=()=>{
 /*Funcion que genera codigo QR cuando no haya una sesion iniciada*/ 
 const sinSesion=()=>{
 
-        console.log('No tenemos session guardada');
+        console.log('No tenemos sesion guardada');
        
         client = new Client();
         client.on('qr', qr => { // Se genera el QR
         qrcode.generate(qr, { small: true });
         });
     
-        client.on('autenticarse', (session) => {
-        // Guardamos credenciales de de session para usar luego
-        sesionData = session;
+        client.on('authenticated', (session) => {
+        // Guardamos credenciales de de sesion para usar luego
+        sessionData = session;
         fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session),  (err) =>{ //guardamos la data en el archivo sesion
             if (err) {
                 console.log(err);
@@ -56,28 +58,31 @@ const sinSesion=()=>{
         client.initialize();
 
 }
+
 let modoPokemon=false; //boolean que indica si el bot Pokemon esta activo o no
 let numerico=/^[0-9]+$/; //Expresion regular solo para numeros
 
 const botPokemon=()=>{
 
-  client.on('mensaje', msg=> {
+  client.on('message', msg=> {
     const {from,to,body}=msg;
-  });
+    console.log(from,to,body);
+       
 
   if (body=='POKEMON'){
-    sendMessage(from,"ingrese un numero para ver el nombre de su pokemon"); 
+    enviarMensaje(from,"ingrese un numero para ver el nombre de su pokemon"); 
     modoPokemon=true;
-    console.log("El numero de telefono es: "+from);
+    console.log("Telefono: "+from + "Mensaje: " +body);
   }
 
   if(modoPokemon && body.match(numerico)){
 
-    
-
+    console.log(apiPokemon(body))
+   apiPokemon(body)
 
   }
 
+});
 
 }
 
@@ -88,7 +93,7 @@ const botPokemon=()=>{
 
 
 const contestarMensaje=() => {
-    client.on('mensaje', (msg) =>{
+    client.on('message', (msg) =>{
         const {from,to,body}=msg;  //from = numero de la persona que manda el msj. body=cuerpo del mensaje
         console.log(from,to,body);
        
