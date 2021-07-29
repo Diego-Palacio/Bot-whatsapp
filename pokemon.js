@@ -15,7 +15,9 @@ const apiPokemon =async(numeroPokemon)=>{
    console.log(pokemon)
    return pokemon;
  }
-     
+
+ module.exports = { apiPokemon }; //Se exporta la funcion apiPokemon para pader usar desde otro archivo js (app.js)
+
   //  apiPokemon(2);
    
    

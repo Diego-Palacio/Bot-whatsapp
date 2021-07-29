@@ -2,7 +2,7 @@ const qrcode = require('qrcode-terminal'); //importamos libreria de qrs
 const { Client} = require('whatsapp-web.js'); //importamos libreria whatsapp-web
 const fs = require('fs')  //paquete que viene por defecto node nativament
 const SESSION_FILE_PATH= './session.json'; // guardamos sesion en la ruta especificada con el nombre sesion.json
-const apiPokemon= require('./pokemon').download;
+const {apiPokemon}= require('./pokemon'); //se importa la funcion desarrollada en otro archivo js (pokemon.js)
 let client; //Declaramos variables globales
 let sessionData;
 
@@ -77,7 +77,7 @@ const botPokemon=()=>{
 
   if(modoPokemon && body.match(numerico)){
 
-    console.log(apiPokemon(body))
+   //console.log(apiPokemon(body))
    apiPokemon(body)
 
   }
