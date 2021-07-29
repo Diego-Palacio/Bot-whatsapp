@@ -57,7 +57,6 @@ const sinSesion=()=>{
 
 }
 
-
 const contestarMensaje=() => {
     client.on('mensaje', (msg) =>{
         const {from,to,body}=msg;  //from = numero de la persona que manda el msj. body=cuerpo del mensaje
