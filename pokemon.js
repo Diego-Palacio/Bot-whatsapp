@@ -13,6 +13,6 @@ const apiPokemon =async(numeroPokemon)=>{
    return pokemon;
  }
      
-    apiPokemon(2);
+  //  apiPokemon(2);
    
    

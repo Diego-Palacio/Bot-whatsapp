@@ -56,6 +56,36 @@ const sinSesion=()=>{
         client.initialize();
 
 }
+let modoPokemon=false; //boolean que indica si el bot Pokemon esta activo o no
+let numerico=/^[0-9]+$/; //Expresion regular solo para numeros
+
+const botPokemon=()=>{
+
+  client.on('mensaje', msg=> {
+    const {from,to,body}=msg;
+  });
+
+  if (body=='POKEMON'){
+    sendMessage(from,"ingrese un numero para ver el nombre de su pokemon"); 
+    modoPokemon=true;
+    console.log("El numero de telefono es: "+from);
+  }
+
+  if(modoPokemon && body.match(numerico)){
+
+    
+
+
+  }
+
+
+}
+
+
+
+
+
+
 
 const contestarMensaje=() => {
     client.on('mensaje', (msg) =>{
