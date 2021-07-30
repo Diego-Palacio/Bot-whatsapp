@@ -61,6 +61,38 @@ const sinSesion=()=>{
 }
 
 
+// api.openweathermap.org/data/2.5/weather?q={city name}&appid={API key}
+
+const botClima=()=>{
+
+  client.on('message', async msg=> {
+  const {from,to,body}=msg;
+  console.log(from,to,body);
+
+  if (body=='CLIMA'){
+    const key= 'cce693458e0d4a70be5508397b860474';
+    enviarMensaje(from,"El clima en Buenos Aires es: "); 
+    const api = await axios .get("api.openweathermap.org/data/2.5/weather?q=London&appid="+key);
+    const apiData= await api.data;
+    console.log("Telefono: "+from + "Mensaje: " +body);
+
+
+/*
+ const resp = await axios .get ('http://api.weatherunlocked.com/api/current/ar.B1665?app_id=9665fa7e&app_key=d79e722fcb961e7a22c2ba89af9b2135')
+        const respuesta= await resp.data ;
+       console.log(resp.data)
+
+        setTemperatura(respuesta.temp_c)
+
+*/
+
+
+  }
+
+  });
+}
+
+
 let modoPokemon=false; //boolean que indica si el bot Pokemon esta activo o no
 let numerico=/^[0-9]+$/; //Expresion regular solo para numeros
 
