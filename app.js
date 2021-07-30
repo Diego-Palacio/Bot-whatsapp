@@ -1,5 +1,5 @@
 const qrcode = require('qrcode-terminal'); //importamos libreria de qrs
-const { Client} = require('whatsapp-web.js'); //importamos libreria whatsapp-web
+const { Clientm, MessageMedia} = require('whatsapp-web.js'); //importamos libreria whatsapp-web
 const fs = require('fs')  //paquete que viene por defecto node nativament
 const SESSION_FILE_PATH= './session.json'; // guardamos sesion en la ruta especificada con el nombre sesion.json
 const axios= require('axios');
@@ -131,6 +131,11 @@ const enviarMensaje=(to,message)=>{
     client.sendMessage(to,message);
 }
 
+//uso metodo de la libreria whatsapp. messageMedia para enviar imagen
+const enviarimagen=(to,file)=>{
+  const mediaFile=MessageMedia.fromFilePath(file);
+  client.sendMessage(to,mediaFile);
+}
 
 
 (fs.existsSync(SESSION_FILE_PATH)) ? conSesion() : sinSesion(); // se llama a las funciones conSesion() y sinSesion() segun si existe o no el archivo sesion
