@@ -63,9 +63,7 @@ const sinSesion=()=>{
 
 let modoPokemon=false; //boolean que indica si el bot Pokemon esta activo o no
 let numerico=/^[0-9]+$/; //Expresion regular solo para numeros
-let nombre="";
-let imagen="";
-let numeroPokemon="";
+
 
 const botPokemon=()=>{
 
@@ -77,6 +75,7 @@ const botPokemon=()=>{
   if (body=='POKEMON'){
     enviarMensaje(from,"ingrese un numero para ver el nombre de su pokemon"); 
     modoPokemon=true;
+    guardarNumero=from; //guardo el numero en variable
     console.log("Telefono: "+from + "Mensaje: " +body);
   }
 
@@ -88,18 +87,20 @@ const botPokemon=()=>{
     //Al mandar el comando POKEMON, se activa el modo BOT POKEMON, donde si la entrada es un numero devuelve el nombre de un pokemon.
     //ademas se guarda el numero telefonico, asi solo a ese contacto se le aplica el bot (de esta forma se soluciona el error
     // de que se envie nombres de pokemon a cualquier contacto que mande un numero sin haber activado el BOT POKEMON).
-         if(modoPokemon && body.match(numerico)){
+         if(modoPokemon && body.match(numerico) && from==guardarNumero){
+
           numeroPokemon=body;
           const api = await axios .get(`https://pokeapi.co/api/v2/pokemon/`+numeroPokemon);
           const apiData= await api.data;
+         
           nombre=apiData.name;
-          console.log(nombre)
-          console.log(numeroPokemon)
           imagen= apiData.sprites.front_default;
           nombreImagen="pokemon.png";
+
+          console.log("numero de pokemon: "+ numeroPokemon+ " nombre de pokemon: "+nombre)
           enviarMensaje(from,nombre);
 
-      // Función para descargar las imágenes obtenidas desde la api pokemon.
+          // Función para descargar las imágenes obtenidas desde la api pokemon.
             imageDownloader(imagen, nombreImagen, function(){
             console.log(`${imagen} image download!!`); 
              enviarimagen(from,"pokemon.png"); //ahora al tenerla descargada, ya podemos enviarla.
