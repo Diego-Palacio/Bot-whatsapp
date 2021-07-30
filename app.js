@@ -1,8 +1,9 @@
 const qrcode = require('qrcode-terminal'); //importamos libreria de qrs
-const { Clientm, MessageMedia} = require('whatsapp-web.js'); //importamos libreria whatsapp-web
+const { Client, MessageMedia} = require('whatsapp-web.js'); //importamos libreria whatsapp-web
 const fs = require('fs')  //paquete que viene por defecto node nativament
 const SESSION_FILE_PATH= './session.json'; // guardamos sesion en la ruta especificada con el nombre sesion.json
 const axios= require('axios');
+const imageDownloader = require('./image-downloader').download;// Importamos la función para descargar imágenes
 let client; //Declaramos variables globales
 let sessionData;
 
@@ -95,8 +96,15 @@ const botPokemon=()=>{
           console.log(nombre)
           console.log(numeroPokemon)
           imagen= apiData.sprites.front_default;
-        
+          nombreImagen="pokemon.png";
           enviarMensaje(from,nombre);
+
+      // Función para descargar las imágenes obtenidas desde la api pokemon.
+            imageDownloader(imagen, nombreImagen, function(){
+            console.log(`${imagen} image download!!`); 
+             enviarimagen(from,"pokemon.png"); //ahora al tenerla descargada, ya podemos enviarla.
+            });
+
          }
 
 
