@@ -2,7 +2,7 @@ const qrcode = require('qrcode-terminal'); //importamos libreria de qrs
 const { Client} = require('whatsapp-web.js'); //importamos libreria whatsapp-web
 const fs = require('fs')  //paquete que viene por defecto node nativament
 const SESSION_FILE_PATH= './session.json'; // guardamos sesion en la ruta especificada con el nombre sesion.json
-const {apiPokemon}= require('./pokemon'); //se importa la funcion desarrollada en otro archivo js (pokemon.js)
+const axios= require('axios');
 let client; //Declaramos variables globales
 let sessionData;
 
@@ -59,12 +59,16 @@ const sinSesion=()=>{
 
 }
 
+
 let modoPokemon=false; //boolean que indica si el bot Pokemon esta activo o no
 let numerico=/^[0-9]+$/; //Expresion regular solo para numeros
+let nombre="";
+let imagen="";
+let numeroPokemon="";
 
 const botPokemon=()=>{
 
-  client.on('message', msg=> {
+  client.on('message', async msg=> {
     const {from,to,body}=msg;
     console.log(from,to,body);
        
@@ -75,12 +79,26 @@ const botPokemon=()=>{
     console.log("Telefono: "+from + "Mensaje: " +body);
   }
 
-  if(modoPokemon && body.match(numerico)){
+  if(body=='SALIR'){
+    modoPokemon=false;
+    enviarMensaje(from,"Chauu, ingresa 'pokemon' nuevamente para volver a jugar");
+}
 
-   //console.log(apiPokemon(body))
-   apiPokemon(body)
+    //Al mandar el comando POKEMON, se activa el modo BOT POKEMON, donde si la entrada es un numero devuelve el nombre de un pokemon.
+    //ademas se guarda el numero telefonico, asi solo a ese contacto se le aplica el bot (de esta forma se soluciona el error
+    // de que se envie nombres de pokemon a cualquier contacto que mande un numero sin haber activado el BOT POKEMON).
+         if(modoPokemon && body.match(numerico)){
+          numeroPokemon=body;
+          const api = await axios .get(`https://pokeapi.co/api/v2/pokemon/`+numeroPokemon);
+          const apiData= await api.data;
+          nombre=apiData.name;
+          console.log(nombre)
+          console.log(numeroPokemon)
+          imagen= apiData.sprites.front_default;
+        
+          enviarMensaje(from,nombre);
+         }
 
-  }
 
 });
 
