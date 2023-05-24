@@ -33,9 +33,6 @@ const conSesion=()=>{
 
 
 
-
-
-
 /*Funcion que genera codigo QR cuando no haya una sesion iniciada*/ 
 const sinSesion=()=>{
 
@@ -46,22 +43,39 @@ const sinSesion=()=>{
         qrcode.generate(qr, { small: true });
         });
     
-        client.on('authenticated', (session) => {
-        // Guardamos credenciales de de sesion para usar luego
-        sessionData = session;
-        fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session),  (err) =>{ //guardamos la data en el archivo sesion
-            if (err) {
-                console.log(err);
-            }
-          });
-        });
+        verMensaje()
+        botPokemon();
+        botClima();
+
+        // client.on('authenticated', (session) => {
+        // // Guardamos credenciales de de sesion para usar luego
+        // sessionData = session;
+        // fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session),  (err) =>{ //guardamos la data en el archivo sesion
+        //     if (err) {
+        //         console.log(err, "error de sesion");
+        //     }
+        //   });
+        // });
 
         client.initialize();
 
 }
 
 
+const verMensaje=()=>{
+  client.on('message', message => {
+    console.log(message.body);
+  });
+   
+}
+
+
 // api.openweathermap.org/data/2.5/weather?q={city name}&appid={API key}
+
+const kevinACentigrado=(temp)=>{
+  return parseInt(temp-273.15);
+} 
+
 
 const botClima=()=>{
 
@@ -71,21 +85,30 @@ const botClima=()=>{
 
   if (body=='CLIMA'){
     const key= 'cce693458e0d4a70be5508397b860474';
-    enviarMensaje(from,"El clima en Buenos Aires es: "); 
-    const api = await axios .get("api.openweathermap.org/data/2.5/weather?q=London&appid="+key);
-    const apiData= await api.data;
+    
+    const api = await axios .get(`https://api.openweathermap.org/data/2.5/weather?q=BSAS,argentina&appid=`+key);
+    const temp= await api.data.main.temp;
+    const tempMin= await api.data.main.temp_min;
+    const tempMax= await api.data.main.temp_max;
+    const icono= await api.data.weather[0].icon;
+    const iconoClima=`https://openweathermap.org/img/wn/${icono}.png`;
+    const nombreIcono= "clima.png"
+
+    imageDownloader(iconoClima, nombreIcono, function(){
+      console.log(`${iconoClima} image download!!`); 
+       enviarimagen(from,nombreIcono); //ahora al tenerla descargada, ya podemos enviarla.
+      });
+
+
+    kevinACentigrado(temp);
+    kevinACentigrado(tempMin);
+    kevinACentigrado(tempMax);
+
+
+
+    console.log("La temperaratura en Buenos Aires es: " +  kevinACentigrado(temp) +" Temperatura Maxima= "+ kevinACentigrado(tempMax) + " Temperatura Minima= " +     kevinACentigrado(tempMin))
+    enviarMensaje(from,"La temperaratura en Buenos Aires es: " +  kevinACentigrado(temp) +" Temperatura Maxima= "+ kevinACentigrado(tempMax) + " Temperatura Minima= " +     kevinACentigrado(tempMin)); 
     console.log("Telefono: "+from + "Mensaje: " +body);
-
-
-/*
- const resp = await axios .get ('http://api.weatherunlocked.com/api/current/ar.B1665?app_id=9665fa7e&app_key=d79e722fcb961e7a22c2ba89af9b2135')
-        const respuesta= await resp.data ;
-       console.log(resp.data)
-
-        setTemperatura(respuesta.temp_c)
-
-*/
-
 
   }
 
@@ -105,7 +128,7 @@ const botPokemon=()=>{
        
 
   if (body=='POKEMON'){
-    enviarMensaje(from,"ingrese un numero para ver el nombre de su pokemon"); 
+    enviarMensaje(from,"ingrese un numero para ver el nombre de su pokemon y su respectiva imagen"); 
     modoPokemon=true;
     guardarNumero=from; //guardo el numero en variable
     console.log("Telefono: "+from + "Mensaje: " +body);
@@ -135,20 +158,14 @@ const botPokemon=()=>{
           // Función para descargar las imágenes obtenidas desde la api pokemon.
             imageDownloader(imagen, nombreImagen, function(){
             console.log(`${imagen} image download!!`); 
-             enviarimagen(from,"pokemon.png"); //ahora al tenerla descargada, ya podemos enviarla.
+             enviarimagen(from,nombreImagen); //ahora al tenerla descargada, ya podemos enviarla.
             });
 
          }
 
-
 });
 
 }
-
-
-
-
-
 
 
 const contestarMensaje=() => {
@@ -179,5 +196,7 @@ const enviarimagen=(to,file)=>{
 }
 
 
-(fs.existsSync(SESSION_FILE_PATH)) ? conSesion() : sinSesion(); // se llama a las funciones conSesion() y sinSesion() segun si existe o no el archivo sesion
+// (fs.existsSync(SESSION_FILE_PATH)) ? conSesion() : sinSesion(); // se llama a las funciones conSesion() y sinSesion() segun si existe o no el archivo sesion
 
+
+sinSesion();
