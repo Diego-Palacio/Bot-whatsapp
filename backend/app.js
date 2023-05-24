@@ -1,3 +1,4 @@
+
 const qrcode = require('qrcode-terminal'); //importamos libreria de qrs
 const { Client, MessageMedia} = require('whatsapp-web.js'); //importamos libreria whatsapp-web
 const fs = require('fs')  //paquete que viene por defecto node nativament
@@ -6,7 +7,6 @@ const axios= require('axios');
 const imageDownloader = require('./image-downloader').download;// Importamos la función para descargar imágenes
 let client; //Declaramos variables globales
 let sessionData;
-
 
 
 
@@ -31,11 +31,11 @@ const conSesion=()=>{
         client.initialize();
 }
 
-
+ 
 
 /*Funcion que genera codigo QR cuando no haya una sesion iniciada*/ 
 const sinSesion=()=>{
-
+ 
         console.log('No tenemos sesion guardada');
        
         client = new Client();
@@ -200,3 +200,4 @@ const enviarimagen=(to,file)=>{
 
 
 sinSesion();
+
