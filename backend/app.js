@@ -12,39 +12,49 @@ let sessionData;
 
 
 /*Funcion que genera codigo QR cuando no haya una sesion iniciada*/ 
-const sinSesion=()=>{
+const Sesion=()=>{
  
-        console.log('No tenemos sesion guardada');
-       
-        client = new Client();
-        client.on('qr', qr => { // Se genera el QR
+       console.log('Iniciando cliente y gestionando sesión...');
+
+    // Configuramos el cliente con LocalAuth para que guarde la sesión solo
+    client = new Client({
+        authStrategy: new LocalAuth() 
+    });
+
+    client.on('qr', qr => {
         qrcode.generate(qr, { small: true });
-        });
-    
-        verMensaje()
+    });
+
+    client.on('ready', () => {
+        console.log('¡El cliente está listo!');
+        // Llamamos a tus funciones una vez que el cliente está conectado
+        verMensaje();
         botPokemon();
         botClima();
+        contestarMensaje();
+    });
 
-        // client.on('authenticated', (session) => {
-        // // Guardamos credenciales de de sesion para usar luego
-        // sessionData = session;
-        // fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session),  (err) =>{ //guardamos la data en el archivo sesion
-        //     if (err) {
-        //         console.log(err, "error de sesion");
-        //     }
-        //   });
-        // });
+    // Este evento no es necesario para guardar archivos, 
+    // pero lo usamos para avisar que entró
+    client.on('authenticated', () => {
+        console.log('Autenticado correctamente');
+    });
 
-        client.initialize();
+    client.initialize();
 
 }
 
 
 const verMensaje=()=>{
-  client.on('message', message => {
-    console.log(message.body);
-  });
+   client.on('message', async message => {
+
+    const{from,to,body}=message;
+
+    if(from=="5491134721503"){
+       console.log(message.body);
+    }
    
+  });
 }
 
 
@@ -174,6 +184,5 @@ const enviarimagen=(to,file)=>{
 }
 
 
-
-sinSesion();
+Sesion();
 
