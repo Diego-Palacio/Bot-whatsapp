@@ -10,28 +10,6 @@ let sessionData;
 
 
 
-//Si existe cargamos el archivo con las credenciales
-const conSesion=()=>{
-        console.log("conectando..")
-        sessionData = require(SESSION_FILE_PATH); //requerimos el archivo ya cargado
-        client = new Client({       //instanciamos el cliente, pero esta vez ya tiene la sesion
-             session: sessionData
-         });
-    
-        client.on('ready', () => {
-        console.log('El cliente esta listo!');
-        // constestarMensaje();
-        botPokemon();
-         });
-    
-        client.on('auth_failure', () => {
-        console.log('** Error de autentificacion vuelve a generar el QRCODE (Borrar el archivo session.json) **');//Tengo que automatizarlo
-        })
-
-        client.initialize();
-}
-
- 
 
 /*Funcion que genera codigo QR cuando no haya una sesion iniciada*/ 
 const sinSesion=()=>{
@@ -195,8 +173,6 @@ const enviarimagen=(to,file)=>{
   client.sendMessage(to,mediaFile);
 }
 
-
-// (fs.existsSync(SESSION_FILE_PATH)) ? conSesion() : sinSesion(); // se llama a las funciones conSesion() y sinSesion() segun si existe o no el archivo sesion
 
 
 sinSesion();
