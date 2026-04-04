@@ -17,7 +17,16 @@ const Sesion=()=>{
 
     // Configuramos el cliente con LocalAuth para que guarde la sesión solo
     client = new Client({
-        authStrategy: new LocalAuth() 
+        authStrategy: new LocalAuth() ,
+         puppeteer: {
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+        headless: true,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage'
+        ],
+    }
     });
 
     client.on('qr', qr => {
