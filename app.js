@@ -6,8 +6,8 @@ let client; //Declaramos variables globales
 let sessionData;
 const botClima = require('./bots/clima'); // Importamos el bot del clima
 const botPokemon = require('./bots/pokemon'); // Importamos el bot de pokemon
-
-
+const botNumeros = require('./bots/numeros'); // Importamos el bot de numeros
+const botCumple = require('./bots/familia'); // Importamos el bot de familia
 
 
 /*Funcion que genera codigo QR cuando no haya una sesion iniciada*/ 
@@ -28,9 +28,12 @@ const Sesion=()=>{
         console.log('¡El cliente está listo!');
         // Llamamos a tus funciones una vez que el cliente está conectado
         verMensaje();
+          botNumeros(client);
         botClima(client);
         botPokemon(client);
+         botCumple(client)
         contestarMensaje();
+       
     });
 
     // Este evento no es necesario para guardar archivos, 
@@ -56,24 +59,6 @@ const verMensaje=()=>{
   });
 }
 
-
-
-
-const contestarMensaje=() => {
-    client.on('message', (msg) =>{
-        const {from,to,body}=msg;  //from = numero de la persona que manda el msj. body=cuerpo del mensaje
-        console.log(from,to,body);
-       
-        switch(body){ //si el mensaje dice hola , se enviaria un cierto mensaje utilizando la funcion enviarmensaje()
-            case('hola'):
-          //  enviarMensaje(from,'holaa');
-            break;
-
-            case('chau'):
-           // enviarMensaje(from,'chauuuuu')
-        }
-  });
-}
 
 
 Sesion();

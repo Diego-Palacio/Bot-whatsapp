@@ -1,6 +1,9 @@
 const axios= require('axios');
 const enviar = require('../envios/enviar'); // Importamos funcion de enviar imagenes
 const imageDownloader = require('../image-downloader').download;// Importamos la función para descargar imágenes
+const path = require('path');
+
+
 
 let modoPokemon=false; //boolean que indica si el bot Pokemon esta activo o no
 let numerico=/^[0-9]+$/; //Expresion regular solo para numeros
@@ -28,7 +31,7 @@ const botPokemon=(client)=>{
     //Al mandar el comando POKEMON, se activa el modo BOT POKEMON, donde si la entrada es un numero devuelve el nombre de un pokemon.
     //ademas se guarda el numero telefonico, asi solo a ese contacto se le aplica el bot (de esta forma se soluciona el error
     // de que se envie nombres de pokemon a cualquier contacto que mande un numero sin haber activado el BOT POKEMON).
-         if(modoPokemon && body.match(numerico) && from==guardarNumero){
+         if(modoPokemon && body.match(numerico) && from==guardarNumero && body<1303){
 
           numeroPokemon=body;
           const api = await axios .get(`https://pokeapi.co/api/v2/pokemon/`+numeroPokemon);
@@ -47,6 +50,13 @@ const botPokemon=(client)=>{
              enviar.imagen(client,from,nombreImagen); //ahora al tenerla descargada, ya podemos enviarla.
             });
 
+         }
+
+         if(body>1302 || body <0) {
+            const rutaCompleta = path.join(__dirname, '../ultimoPokemon.png');
+          
+             enviar.imagen(client,from,rutaCompleta); 
+           
          }
 
 });
